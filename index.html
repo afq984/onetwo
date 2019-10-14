@@ -109,24 +109,34 @@
 			'~': "\u02de",
 		};
 		function onetwo(one) {
-			// this is very inefficient
-			// might use InputEvent
-			one.value = Array.prototype.map.call(one.value, c => {
+			return Array.prototype.map.call(one, c => {
 				if (zero[c]) return c;
 				if (c in two) return two[c];
 				return c;
 			}).join("");
 		}
+		function setup() {
+			var one = document.getElementById("one");
+			one.oninput = event => {
+				console.log(event);
+				var end = one.selectionEnd;
+				if (event.inputType === "insertText") {
+					one.setRangeText(onetwo(event.data), end - event.data.length, end);
+				} else {
+					one.value = onetwo(one.value);
+				}
+				one.setSelectionRange(end, end);
+			};
+		}
 	</script>
 </head>
 
-<body>
+<body onload="setup()">
 	<main class="ui container">
 		<br>
 		<div class="ui form">
 			<div class="field">
-				<textarea id="one" oninput="onetwo(this)" rows="24" spellcheck="false"
-					placeholder="ţýþé šöɱéţĥîñĝ ĥéŕé···"></textarea>
+				<textarea id="one" rows="24" spellcheck="false" placeholder="ţýþé šöɱéţĥîñĝ ĥéŕé···"></textarea>
 			</div>
 			<div class="inline field">
 				<div class="ui checkbox">
